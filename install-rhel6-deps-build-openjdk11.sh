@@ -66,7 +66,7 @@ SOURCE_NAME="\${TARBALL_BASE_NAME}-sources_\${TARBALL_VERSION}"
 VENDOR="18.9"
 
 CLONE_URL=https://hg.openjdk.java.net/jdk-updates/jdk11u
-TAG="jdk-11.0.3+4"
+TAG="jdk-\${UPDATE}+\${BUILD}"
 
 clone() {
   url=\$1
