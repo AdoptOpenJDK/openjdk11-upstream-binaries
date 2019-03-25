@@ -29,11 +29,11 @@ which is about 742 MB in size, containing:
 
 Example:
 
-    jdk11u/build/release/images/openjdk-11u-11.0.3+0-debuginfo.tar.gz
-    jdk11u/build/release/images/openjdk-11u-11.0.3+0.tar.gz
-    jdk11u/build/openjdk-11u-11.0.3+0-sources.tar.gz
-    jdk11u/build/slowdebug/images/openjdk-11u-11.0.3+0-slowdebug.tar.gz
-    jdk11u/build/slowdebug/images/openjdk-11u-11.0.3+0-slowdebug-debuginfo.tar.gz
+    jdk11u/build/release/images/OpenJDK11U-x64_linux_11.0.3_4_ea-debuginfo.tar.gz
+    jdk11u/build/release/images/OpenJDK11U-x64_linux_11.0.3_4_ea.tar.gz
+    jdk11u/build/OpenJDK11U-sources_11.0.3_4_ea.tar.gz
+    jdk11u/build/slowdebug/images/OpenJDK11U-x64_linux_11.0.3_4_ea-slowdebug.tar.gz
+    jdk11u/build/slowdebug/images/OpenJDK11U-x64_linux_11.0.3_4_ea-slowdebug-debuginfo.tar.gz
     jdk11u/overall-build.log
 
 ### Only Build OpenJDK 11 (without Build Requirements)
