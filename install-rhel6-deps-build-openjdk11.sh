@@ -56,8 +56,12 @@ set -e
 UPDATE="11.0.3"
 BUILD=4
 NAME="openjdk-11u-\${UPDATE}+\${BUILD}"
-NAME_SUFFIX="ea-linux-x86_64"
-SOURCE_NAME="\${NAME}-sources"
+TARBALL_BASE_NAME="OpenJDK11U"
+EA_SUFFIX="_ea"
+PLATFORM="x64_linux"
+TARBALL_VERSION="\${UPDATE}_\${BUILD}\${EA_SUFFIX}"
+TARBALL_NAME="\${TARBALL_BASE_NAME}-\${PLATFORM}_\${TARBALL_VERSION}"
+SOURCE_NAME="\${TARBALL_BASE_NAME}-sources_\${TARBALL_VERSION}"
 # Release string for the vendor. Use the GA date.
 VENDOR="18.9"
 
@@ -84,7 +88,7 @@ build() {
 
   # Create a source tarball archive corresponding to the
   # binary build
-  tar -c -z -f ../\$SOURCE_NAME.tar.gz --exclude-vcs --exclude='**.patch*' --exclude='overall-build.log' .
+  tar -c -z -f ../\${SOURCE_NAME}.tar.gz --exclude-vcs --exclude='**.patch*' --exclude='overall-build.log' .
 
   for debug in release slowdebug; do
     bash configure \
@@ -107,16 +111,17 @@ build() {
     pushd build/\$debug/images
       if [ "\${debug}_" == "slowdebug_" ]; then
 	NAME="\$NAME-\$debug"
+	TARBALL_NAME="\$TARBALL_NAME-\$debug"
       fi
       mv jdk \$NAME    
-      tar -c -f \$NAME-\$NAME_SUFFIX.tar \$NAME --exclude='**.debuginfo'
-      gzip \$NAME-\$NAME_SUFFIX.tar
-      tar -c -f \$NAME-\$NAME_SUFFIX-debuginfo.tar \$(find \${NAME}/ -name \*.debuginfo)
-      gzip \$NAME-\$NAME_SUFFIX-debuginfo.tar
+      tar -c -f \${TARBALL_NAME}.tar \$NAME --exclude='**.debuginfo'
+      gzip \${TARBALL_NAME}.tar
+      tar -c -f \${TARBALL_NAME}-debuginfo.tar \$(find \${NAME}/ -name \*.debuginfo)
+      gzip \${TARBALL_NAME}-debuginfo.tar
       mv \$NAME jdk
     popd
   done
-  mv ../\$SOURCE_NAME.tar.gz build/
+  mv ../\${SOURCE_NAME}.tar.gz build/
 
   find \$(pwd)/build -name \*.tar.gz
 }
