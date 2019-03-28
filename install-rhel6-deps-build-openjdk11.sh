@@ -55,7 +55,7 @@ set -e
 
 UPDATE="11.0.3"
 BUILD=5
-NAME="openjdk-11u-\${UPDATE}+\${BUILD}"
+NAME="openjdk-\${UPDATE}+\${BUILD}"
 TARBALL_BASE_NAME="OpenJDK11U"
 EA_SUFFIX="_ea"
 PLATFORM="x64_linux"
@@ -90,6 +90,11 @@ build() {
   # binary build
   tar -c -z -f ../\${SOURCE_NAME}.tar.gz --exclude-vcs --exclude='**.patch*' --exclude='overall-build.log' .
 
+  VERSION_PRE=""
+  if [ "\${EA_SUFFIX}_" != "_" ]; then
+    VERSION_PRE="ea"
+  fi
+
   for debug in release slowdebug; do
     bash configure \
        --with-boot-jdk="/opt/jdk-10.0.2+13/" \
@@ -97,7 +102,7 @@ build() {
        --with-conf-name="\$debug" \
        --enable-unlimited-crypto \
        --with-version-build=\$BUILD \
-       --with-version-pre="" \
+       --with-version-pre="\$VERSION_PRE" \
        --with-version-opt="" \
        --with-vendor-version-string="\$VENDOR" \
        --with-native-debug-symbols=external \
