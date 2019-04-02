@@ -2,7 +2,7 @@
 set -e
 
 UPDATE="11.0.3"
-BUILD=5
+BUILD=6
 NAME="openjdk-${UPDATE}+${BUILD}"
 TARBALL_BASE_NAME="OpenJDK11U"
 EA_SUFFIX="_ea"
