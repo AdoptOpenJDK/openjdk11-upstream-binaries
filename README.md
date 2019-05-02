@@ -15,7 +15,7 @@ On your newly commissioned RHEL machine, you can run these steps to produce a bu
     $ wget -O openjdk11-upstream-binaries-master.tar.gz "https://github.com/AdoptOpenJDK/openjdk11-upstream-binaries/archive/master.tar.gz"
     $ tar -xf openjdk11-upstream-binaries-master.tar.gz
     $ cd openjdk11-upstream-binaries-master
-    $ bash install-rhel6-deps-build-openjdk11.sh
+    $ bash install-rhel-deps-build-openjdk11.sh
 
 This will produce a file in `/home/openjdk` called `openjdk-*-all-artefacts.tar.gz`,
 which is about 742 MB in size, containing:
