@@ -31,12 +31,12 @@ build() {
 
   bash make/autoconf/autogen.sh
 
-  # Note: Boot JDK 9 built on RHEL-6 with build-openjdk9.sh
+  # Note: Boot JDK 9 built on RHEL with build-openjdk9.sh
   # 
-  # $ cd /opt && sudo tar -xf openjdk9u-9.0.4-b12.tar.gz
+  # $ cd /opt && sudo tar -xf openjdk-9u9.0.4-b12.tar.gz
   for debug in release slowdebug; do
     bash configure \
-       --with-boot-jdk="/opt/openjdk9u-9.0.4-b12" \
+       --with-boot-jdk="/opt/openjdk-9u9.0.4-b12" \
        --with-debug-level="$debug" \
        --with-conf-name="$debug" \
        --enable-unlimited-crypto \

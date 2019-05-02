@@ -5,8 +5,14 @@ UPDATE="9.0.4"
 BUILD=12
 NAME="openjdk-9u${UPDATE}-b${BUILD}"
 
-CLONE_URL=https://hg.openjdk.java.net/jdk9-updates/jdk9u
+CLONE_URL=https://hg.openjdk.java.net/jdk-updates/jdk9u
 TAG=tip
+
+BOOT_JDK=/usr/lib/jvm/java-1.8.0-openjdk.x86_64/
+ARCH="$(uname -m)"
+if [ "${ARCH}_" == "aarch64_" ]; then
+  BOOT_JDK=/usr/lib/jvm/java-1.8.0-openjdk
+fi
 
 clone() {
   url=$1
@@ -35,7 +41,7 @@ build() {
 
   for debug in release slowdebug; do
     bash configure \
-       --with-boot-jdk="/usr/lib/jvm/java-1.8.0-openjdk.x86_64/" \
+       --with-boot-jdk="$BOOT_JDK" \
        --with-debug-level="$debug" \
        --with-conf-name="$debug" \
        --enable-unlimited-crypto \
@@ -43,7 +49,7 @@ build() {
        --with-version-pre="" \
        --with-version-opt="" \
        --with-native-debug-symbols=external \
-       --with-cacerts-file=/etc/pki/java/cacerts \
+       --with-cacerts-file=/etc/pki/java/cacerts
     target="bootcycle-images"
     if [ "${debug}_" == "slowdebug_" ]; then
       target="images"

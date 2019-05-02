@@ -1,6 +1,27 @@
 #!/bin/bash
 set -e
 
+# Determine platform name. Currently supported:
+#
+# x86_64 => x64_linux
+# aarch64 => aarch64_linux
+#
+platform_name() {
+  arch=$(uname -m)
+  case $arch in
+  x86_64)
+    echo "x64_linux"
+    ;;
+  aarch64)
+    echo "aarch64_linux"
+    ;;
+  *)
+    echo "Unsupported platform '$arch'" 1>&2
+    exit 1
+    ;;
+  esac
+}
+
 BRS_FILE=openjdk_build_deps.txt
 BUILD_SCRIPT=build-openjdk11.sh
 
@@ -27,7 +48,7 @@ pkgconfig
 xorg-x11-proto-devel
 zip
 unzip
-java-1.7.0-openjdk-devel
+java-1.8.0-openjdk-devel
 openssl
 mercurial
 wget
@@ -39,16 +60,17 @@ EOF
 # Download and install boot JDK
 #
 # Originally boot-strapped with build-openjdk9.sh and build-openjdk10.sh
-# For simplicity download a JDK 10 from AdoptOpenJDK
+# For simplicity download a suitable boot JDK from AdoptOpenJDK.
 pushd /opt
-wget "https://github.com/AdoptOpenJDK/openjdk10-releases/releases/download/jdk-10.0.2%2B13/OpenJDK10_x64_Linux_jdk-10.0.2%2B13.tar.gz"
-tar -xf OpenJDK10_x64_Linux_jdk-10.0.2+13.tar.gz
-/opt/jdk-10.0.2+13/bin/java -version
+wget -O jdk-11.0.3_7.tar.gz "https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.3%2B7/OpenJDK11U-jdk_$(platform_name)_hotspot_11.0.3_7.tar.gz"
+tar -xf jdk-11.0.3_7.tar.gz
+/opt/jdk-11.0.3+7/bin/java -version
 popd
 
 yum -y install $(echo $(cat $BRS_FILE))
 useradd openjdk
 
+# Note: platform_name intentionally not escaped
 cat > $BUILD_SCRIPT <<EOF
 #!/bin/bash
 set -e
@@ -58,7 +80,7 @@ BUILD=7
 NAME="openjdk-\${UPDATE}+\${BUILD}"
 TARBALL_BASE_NAME="OpenJDK11U"
 EA_SUFFIX=""
-PLATFORM="x64_linux"
+PLATFORM="$(platform_name)"
 TARBALL_VERSION="\${UPDATE}_\${BUILD}\${EA_SUFFIX}"
 TARBALL_NAME="\${TARBALL_BASE_NAME}-\${PLATFORM}_\${TARBALL_VERSION}"
 SOURCE_NAME="\${TARBALL_BASE_NAME}-sources_\${TARBALL_VERSION}"
@@ -97,7 +119,7 @@ build() {
 
   for debug in release slowdebug; do
     bash configure \
-       --with-boot-jdk="/opt/jdk-10.0.2+13/" \
+       --with-boot-jdk="/opt/jdk-11.0.3+7/" \
        --with-debug-level="\$debug" \
        --with-conf-name="\$debug" \
        --enable-unlimited-crypto \

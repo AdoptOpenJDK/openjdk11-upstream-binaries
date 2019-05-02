@@ -1,12 +1,33 @@
 #!/bin/bash
 set -e
 
+# Determine platform name. Currently supported:
+#
+# x86_64 => x64_linux
+# aarch64 => aarch64_linux
+#
+platform_name() {
+  arch=$(uname -m)
+  case $arch in
+  x86_64)
+    echo "x64_linux"
+    ;;
+  aarch64)
+    echo "aarch64_linux"
+    ;;
+  *)
+    echo "Unsupported platform '$arch'" 1>&2
+    exit 1
+    ;;
+  esac
+}
+
 UPDATE="11.0.3"
 BUILD=7
 NAME="openjdk-${UPDATE}+${BUILD}"
 TARBALL_BASE_NAME="OpenJDK11U"
 EA_SUFFIX=""
-PLATFORM="x64_linux"
+PLATFORM="$(platform_name)"
 TARBALL_VERSION="${UPDATE}_${BUILD}${EA_SUFFIX}"
 TARBALL_NAME="${TARBALL_BASE_NAME}-${PLATFORM}_${TARBALL_VERSION}"
 SOURCE_NAME="${TARBALL_BASE_NAME}-sources_${TARBALL_VERSION}"
@@ -39,14 +60,15 @@ build() {
   tar -c -z -f ../${SOURCE_NAME}.tar.gz --transform "s|^|${NAME}-sources/|" --exclude-vcs --exclude='**.patch*' --exclude='overall-build.log' .
 
   VERSION_PRE=""
-  if [ "\${EA_SUFFIX}_" != "_" ]; then
+  if [ "${EA_SUFFIX}_" != "_" ]; then
     VERSION_PRE="ea"
   fi
 
-  # NOTE: Boot JDK built with build-openjdk10.sh
+  # NOTE: Boot JDK downloaded from AdoptOpenJDK. Originally
+  # bootstrapped with relevant build-openjdkXX.sh scripts.
   for debug in release slowdebug; do
     bash configure \
-       --with-boot-jdk="/opt/openjdk-10u10.0.1-b10/" \
+       --with-boot-jdk="/opt/jdk-11.0.3+7/" \
        --with-debug-level="$debug" \
        --with-conf-name="$debug" \
        --enable-unlimited-crypto \

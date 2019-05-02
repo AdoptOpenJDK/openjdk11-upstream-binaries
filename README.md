@@ -10,7 +10,7 @@ This repository also contains [build scripts](install-rhel6-deps-build-openjdk11
 
 ### Usage
 
-On your newly commissioned RHEL 6 machine, you can run these steps to produce a build:
+On your newly commissioned RHEL machine, you can run these steps to produce a build:
 
     $ wget -O openjdk11-upstream-binaries-master.tar.gz "https://github.com/AdoptOpenJDK/openjdk11-upstream-binaries/archive/master.tar.gz"
     $ tar -xf openjdk11-upstream-binaries-master.tar.gz
