@@ -75,11 +75,11 @@ cat > $BUILD_SCRIPT <<EOF
 #!/bin/bash
 set -e
 
-UPDATE="11.0.3"
-BUILD=7
+UPDATE="11.0.4"
+BUILD=1
 NAME="openjdk-\${UPDATE}+\${BUILD}"
 TARBALL_BASE_NAME="OpenJDK11U"
-EA_SUFFIX=""
+EA_SUFFIX="_ea"
 PLATFORM="$(platform_name)"
 TARBALL_VERSION="\${UPDATE}_\${BUILD}\${EA_SUFFIX}"
 TARBALL_NAME="\${TARBALL_BASE_NAME}-\${PLATFORM}_\${TARBALL_VERSION}"
@@ -87,7 +87,7 @@ SOURCE_NAME="\${TARBALL_BASE_NAME}-sources_\${TARBALL_VERSION}"
 # Release string for the vendor. Use the GA date.
 VENDOR="18.9"
 
-CLONE_URL=https://hg.openjdk.java.net/jdk-updates/jdk11u
+CLONE_URL=https://hg.openjdk.java.net/jdk-updates/jdk11u-dev
 TAG="jdk-\${UPDATE}+\${BUILD}"
 
 clone() {
