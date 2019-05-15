@@ -158,7 +158,7 @@ clone \$CLONE_URL \$TAG \$TARGET_FOLDER
 pushd \$TARGET_FOLDER
   build 2>&1 | tee overall-build.log
 popd
-ALL_ARTEFACTS="\$NAME\$EA_SUFFIX-all-artefacts.tar"
+ALL_ARTEFACTS="\$NAME\$EA_SUFFIX-$(platform_name)-all-artefacts.tar"
 tar -c -f \$ALL_ARTEFACTS --transform "s|^\$TARGET_FOLDER/|\$NAME\$EA_SUFFIX-all-artefacts/$(platform_name)/|g" \$(echo \$(find \$TARGET_FOLDER/build -name \*.tar.gz) \$TARGET_FOLDER/overall-build.log)
 gzip \$ALL_ARTEFACTS
 ls -lh \$(pwd)/*.tar.gz
