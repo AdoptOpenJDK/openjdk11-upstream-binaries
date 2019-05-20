@@ -23,7 +23,7 @@ platform_name() {
 }
 
 UPDATE="11.0.4"
-BUILD=2
+BUILD=3
 NAME="openjdk-${UPDATE}+${BUILD}"
 TARBALL_BASE_NAME="OpenJDK11U"
 EA_SUFFIX="_ea"
