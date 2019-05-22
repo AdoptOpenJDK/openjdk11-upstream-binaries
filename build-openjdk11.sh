@@ -25,11 +25,14 @@ platform_name() {
 UPDATE="11.0.4"
 BUILD=3
 NAME="openjdk-${UPDATE}+${BUILD}"
+JRE_NAME="${NAME}-jre"
 TARBALL_BASE_NAME="OpenJDK11U"
 EA_SUFFIX="_ea"
 PLATFORM="$(platform_name)"
 TARBALL_VERSION="${UPDATE}_${BUILD}${EA_SUFFIX}"
-TARBALL_NAME="${TARBALL_BASE_NAME}-${PLATFORM}_${TARBALL_VERSION}"
+PLATFORM_VERSION="${PLATFORM}_${TARBALL_VERSION}"
+TARBALL_NAME="${TARBALL_BASE_NAME}-jdk_${PLATFORM_VERSION}"
+TARBALL_NAME_JRE="${TARBALL_BASE_NAME}-jre_${PLATFORM_VERSION}"
 SOURCE_NAME="${TARBALL_BASE_NAME}-sources_${TARBALL_VERSION}"
 # Release string for the vendor. Use the GA date.
 VENDOR="18.9"
@@ -78,23 +81,33 @@ build() {
        --with-vendor-version-string="$VENDOR" \
        --with-native-debug-symbols=external \
        --disable-warnings-as-errors
-    target="bootcycle-images"
+    targets="bootcycle-images legacy-images"
     if [ "${debug}_" == "slowdebug_" ]; then
-      target="images"
+      targets="images"
     fi
-    make LOG=debug CONF=$debug $target
+    make LOG=debug CONF=$debug $targets
     # Package it up
     pushd build/$debug/images
       if [ "${debug}_" == "slowdebug_" ]; then
 	NAME="$NAME-$debug"
 	TARBALL_NAME="$TARBALL_NAME-$debug"
       fi
-      mv jdk $NAME    
+      # JDK package
+      mv jdk $NAME
       tar -c -f ${TARBALL_NAME}.tar $NAME --exclude='**.debuginfo'
       gzip ${TARBALL_NAME}.tar
       tar -c -f ${TARBALL_NAME}-debuginfo.tar $(find ${NAME}/ -name \*.debuginfo)
       gzip ${TARBALL_NAME}-debuginfo.tar
       mv $NAME jdk
+      # JRE package produced via legacy-images (release only)
+      if [ "${debug}_" == "release_" ]; then
+        mv jre $JRE_NAME
+        tar -c -f ${TARBALL_NAME_JRE}.tar $JRE_NAME --exclude='**.debuginfo'
+        gzip ${TARBALL_NAME_JRE}.tar
+        tar -c -f ${TARBALL_NAME_JRE}-debuginfo.tar $(find ${JRE_NAME}/ -name \*.debuginfo)
+        gzip ${TARBALL_NAME_JRE}-debuginfo.tar
+        mv $JRE_NAME jre
+      fi
     popd
   done
   mv ../${SOURCE_NAME}.tar.gz build/
