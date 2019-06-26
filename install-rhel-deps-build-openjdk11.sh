@@ -76,7 +76,7 @@ cat > $BUILD_SCRIPT <<EOF
 set -e
 
 UPDATE="11.0.4"
-BUILD=8
+BUILD=9
 NAME="openjdk-\${UPDATE}+\${BUILD}"
 JRE_NAME="\${NAME}-jre"
 TARBALL_BASE_NAME="OpenJDK11U"
