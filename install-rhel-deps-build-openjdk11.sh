@@ -68,6 +68,35 @@ tar -xf jdk-11.0.3_7.tar.gz
 popd
 
 yum -y install $(echo $(cat $BRS_FILE))
+
+# On some build hosts available disk size of /home
+# is insufficient for building OpenJDK in release and
+# slowdebug configurations. Be sure to bind-mount
+# an appropriate slice of / for the build to succeed.
+THRESHOLD_DISK_SIZE="20"
+AVAIL_HOME="$(echo $(df -P --block-size=G /home | tail -n1 | awk '{print $4}' | sed 's/G//g'))"
+AVAIL_OPT="$(echo $(df -P --block-size=G /opt | tail -n1 | awk '{print $4}' | sed 's/G//g'))"
+if [ ${AVAIL_HOME} -lt ${THRESHOLD_DISK_SIZE} ]; then
+  # Some diagnostic output
+  df -P -h
+  if [ ${AVAIL_OPT} -lt ${THRESHOLD_DISK_SIZE} ]; then
+    # Nothing we can do, the build host seems not suitable
+    echo "Neither /home nor /opt have sufficient disk space available. This is an error." 1>&2
+    exit 1
+  fi
+  # Preconditions met. Bind mount a slice of /opt
+  if [ ! -e /opt/openjdk ]; then
+    mkdir /opt/openjdk
+  fi
+  if [ ! -e /home/openjdk ]; then
+    mkdir /home/openjdk
+  fi
+  echo -n "Bind-mounting /opt/openjdk (Avail: ${AVAIL_OPT}G) to "
+  echo "/home/openjdk (Avail: ${AVAIL_HOME}G) for disk space reasons."
+  mount -o bind /opt/openjdk /home/openjdk
+else
+  echo "Disk space of /home seems sufficient: Avail: ${AVAIL_OPT}G"
+fi
 useradd openjdk
 
 # Note: platform_name intentionally not escaped
