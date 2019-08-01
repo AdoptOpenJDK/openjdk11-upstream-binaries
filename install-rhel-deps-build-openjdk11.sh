@@ -62,10 +62,11 @@ EOF
 # Originally boot-strapped with build-openjdk9.sh and build-openjdk10.sh
 # For simplicity download a suitable boot JDK from AdoptOpenJDK.
 pushd /opt
-wget -O jdk-11.0.3_7.tar.gz "https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.3%2B7/OpenJDK11U-jdk_$(platform_name)_hotspot_11.0.3_7.tar.gz"
-tar -xf jdk-11.0.3_7.tar.gz
-/opt/jdk-11.0.3+7/bin/java -version
+wget -O jdk-11.0.4_11.tar.gz "https://github.com/AdoptOpenJDK/openjdk11-upstream-binaries/releases/download/jdk-11.0.4%2B11/OpenJDK11U-jdk_$(platform_name)_11.0.4_11.tar.gz"
+tar -xf jdk-11.0.4_11.tar.gz
+/opt/openjdk-11.0.4+11/bin/java -version
 popd
+BOOT_JDK="/opt/openjdk-11.0.4+11/"
 
 yum -y install $(echo $(cat $BRS_FILE))
 
@@ -99,7 +100,7 @@ else
 fi
 useradd openjdk
 
-# Note: platform_name intentionally not escaped
+# Note: platform_name, BOOT_JDK intentionally not escaped
 cat > $BUILD_SCRIPT <<EOF
 #!/bin/bash
 set -e
@@ -159,7 +160,7 @@ build() {
 
   for debug in release slowdebug; do
     bash configure \
-       --with-boot-jdk="/opt/jdk-11.0.3+7/" \
+       --with-boot-jdk="$BOOT_JDK" \
        --with-debug-level="\$debug" \
        --with-conf-name="\$debug" \
        --enable-unlimited-crypto \

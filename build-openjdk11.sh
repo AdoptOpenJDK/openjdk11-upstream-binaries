@@ -79,7 +79,7 @@ build() {
   # bootstrapped with relevant build-openjdkXX.sh scripts.
   for debug in release slowdebug; do
     bash configure \
-       --with-boot-jdk="/opt/jdk-11.0.3+7/" \
+       --with-boot-jdk="/opt/openjdk-11.0.4+11/" \
        --with-debug-level="$debug" \
        --with-conf-name="$debug" \
        --enable-unlimited-crypto \
