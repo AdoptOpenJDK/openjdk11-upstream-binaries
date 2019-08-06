@@ -102,7 +102,7 @@ build() {
       fi
       # JDK package
       mv jdk $NAME
-      tar -c -f ${TARBALL_NAME}.tar $NAME --exclude='**.debuginfo'
+      tar -c -f ${TARBALL_NAME}.tar --exclude='**.debuginfo' $NAME
       gzip ${TARBALL_NAME}.tar
       tar -c -f ${TARBALL_NAME}-debuginfo.tar $(find ${NAME}/ -name \*.debuginfo)
       gzip ${TARBALL_NAME}-debuginfo.tar
@@ -110,7 +110,7 @@ build() {
       # JRE package produced via legacy-images (release only)
       if [ "${debug}_" == "release_" ]; then
         mv jre $JRE_NAME
-        tar -c -f ${TARBALL_NAME_JRE}.tar $JRE_NAME --exclude='**.debuginfo'
+        tar -c -f ${TARBALL_NAME_JRE}.tar --exclude='**.debuginfo' $JRE_NAME
         gzip ${TARBALL_NAME_JRE}.tar
         tar -c -f ${TARBALL_NAME_JRE}-debuginfo.tar $(find ${JRE_NAME}/ -name \*.debuginfo)
         gzip ${TARBALL_NAME_JRE}-debuginfo.tar
