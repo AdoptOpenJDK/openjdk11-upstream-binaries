@@ -109,6 +109,7 @@ UPDATE="11.0.5"
 BUILD=2
 NAME="openjdk-\${UPDATE}+\${BUILD}"
 JRE_NAME="\${NAME}-jre"
+TEST_IMAGE_NAME="\${NAME}-test-image"
 TARBALL_BASE_NAME="OpenJDK11U"
 EA_SUFFIX="_ea"
 PLATFORM="$(platform_name)"
@@ -116,6 +117,7 @@ TARBALL_VERSION="\${UPDATE}_\${BUILD}\${EA_SUFFIX}"
 PLATFORM_VERSION="\${PLATFORM}_\${TARBALL_VERSION}"
 TARBALL_NAME="\${TARBALL_BASE_NAME}-jdk_\${PLATFORM_VERSION}"
 TARBALL_NAME_JRE="\${TARBALL_BASE_NAME}-jre_\${PLATFORM_VERSION}"
+TARBALL_NAME_TEST_IMAGE="\${TARBALL_BASE_NAME}-testimage_\${PLATFORM_VERSION}"
 SOURCE_NAME="\${TARBALL_BASE_NAME}-sources_\${TARBALL_VERSION}"
 # Release string for the vendor. Use the GA date.
 VENDOR="18.9"
@@ -170,7 +172,7 @@ build() {
        --with-vendor-version-string="\$VENDOR" \
        --with-native-debug-symbols=external \
        --disable-warnings-as-errors
-    targets="bootcycle-images legacy-images"
+    targets="bootcycle-images legacy-images test-image"
     if [ "\${debug}_" == "slowdebug_" ]; then
       targets="images"
     fi
@@ -195,6 +197,11 @@ build() {
         tar -c -f \${TARBALL_NAME_JRE}-debuginfo.tar \$(find \${JRE_NAME}/ -name \*.debuginfo)
         gzip \${TARBALL_NAME_JRE}-debuginfo.tar
         mv \$JRE_NAME jre
+        # Test image (release-only: needed for after-the-fact testing with native libs)
+        mv "test" \$TEST_IMAGE_NAME
+        tar -c -f \${TARBALL_NAME_TEST_IMAGE}.tar \$TEST_IMAGE_NAME
+        gzip \${TARBALL_NAME_TEST_IMAGE}.tar
+        mv \$TEST_IMAGE_NAME "test"
       fi
     popd
   done
