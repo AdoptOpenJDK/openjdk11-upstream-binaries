@@ -6,19 +6,44 @@
 # produced with the current timestamp (YY-MM-DD HH:mm) as content.
 #set -xv
 
-# 8u update cycle release version number
+# 11u update cycle release version number
 UPDATE="11.0.5"
+JDK_URL=https://hg.openjdk.java.net/jdk-updates/jdk11u
 JDK_REPO=jdk11u
+BASE_PATH="$1"
 
 if [ -z "${WORKSPACE}" ]; then
-  WORKSPACE="."
+  WORKSPACE="$(pwd)"
+fi
+if [ -z "${BASE_PATH}" ]; then
+  BASE_PATH="$(pwd)"
 fi
 
-pushd $JDK_REPO
+check_clone() {
+  echo "Checking top HG repo exists..."
+  # Ensure parent folder exists
+  if [ ! -e "$BASE_PATH" ]; then
+    mkdir -p "$BASE_PATH"
+  fi
+  if [ -d "$BASE_PATH/$JDK_REPO" ]; then
+    echo "$JDK_REPO exists, skipping clone."
+  else
+    pushd $BASE_PATH
+      hg clone $JDK_URL $JDK_REPO
+    popd
+  fi
+}
 
 # Export a local home so hg doesn't use some user-local aliases
 tmp_dir="$(mktemp -d)"
 export HOME=$tmp_dir
+
+echo "Using base path: $BASE_PATH"
+
+# Ensure clone exists
+check_clone
+
+pushd "$BASE_PATH/$JDK_REPO"
 
 hg pull -u
 
