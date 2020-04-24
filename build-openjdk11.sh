@@ -35,6 +35,7 @@ PLATFORM_VERSION="${PLATFORM}_${TARBALL_VERSION}"
 TARBALL_NAME="${TARBALL_BASE_NAME}-jdk_${PLATFORM_VERSION}"
 TARBALL_NAME_JRE="${TARBALL_BASE_NAME}-jre_${PLATFORM_VERSION}"
 TARBALL_NAME_TEST_IMAGE="${TARBALL_BASE_NAME}-testimage_${PLATFORM_VERSION}"
+TARBALL_NAME_STATIC_LIBS="${TARBALL_BASE_NAME}-static-libs_${PLATFORM_VERSION}"
 SOURCE_NAME="${TARBALL_BASE_NAME}-sources_${TARBALL_VERSION}"
 # Release string for the vendor. Use the GA date.
 VENDOR="18.9"
@@ -91,7 +92,7 @@ build() {
        --with-vendor-version-string="$VENDOR" \
        --with-native-debug-symbols=external \
        --disable-warnings-as-errors
-    targets="bootcycle-images legacy-images test-image"
+    targets="bootcycle-images legacy-images test-image static-libs-image"
     if [ "${debug}_" == "slowdebug_" ]; then
       targets="images"
     fi
@@ -122,6 +123,10 @@ build() {
         tar -c -f ${TARBALL_NAME_TEST_IMAGE}.tar $TEST_IMAGE_NAME
         gzip ${TARBALL_NAME_TEST_IMAGE}.tar
         mv $TEST_IMAGE_NAME "test"
+        # Static libraries (release-only: needed for building graal vm with native image)
+        # Tar as overlay
+        tar --transform "s|^static-libs/*|${NAME}/|" -c -f ${TARBALL_NAME_STATIC_LIBS}.tar "static-libs"
+        gzip ${TARBALL_NAME_STATIC_LIBS}.tar
       fi
     popd
   done
