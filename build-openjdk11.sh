@@ -23,7 +23,7 @@ platform_name() {
 }
 
 UPDATE="11.0.8"
-BUILD=7
+BUILD=8
 NAME="openjdk-${UPDATE}_${BUILD}"
 JRE_NAME="${NAME}-jre"
 TEST_IMAGE_NAME="${NAME}-test-image"
