@@ -22,6 +22,28 @@ platform_name() {
   esac
 }
 
+#
+# Mapping for static-libs packaging
+#
+# x86_64 => amd64
+# aarch64 => aarch64
+#
+staticlibs_arch() {
+  arch=$(uname -m)
+  case $arch in
+  x86_64)
+    echo "amd64"
+    ;;
+  aarch64)
+    echo "aarch64"
+    ;;
+  *)
+    echo "Unsupported platform '$arch'" 1>&2
+    exit 1
+    ;;
+  esac
+}
+
 BRS_FILE=openjdk_build_deps.txt
 BUILD_SCRIPT=build-openjdk11.sh
 
@@ -113,6 +135,7 @@ TEST_IMAGE_NAME="\${NAME}-test-image"
 TARBALL_BASE_NAME="OpenJDK11U"
 EA_SUFFIX="_ea"
 PLATFORM="$(platform_name)"
+STATICLIBS_ARCH="$(staticlibs_arch)"
 TARBALL_VERSION="\${UPDATE}_\${BUILD}\${EA_SUFFIX}"
 PLATFORM_VERSION="\${PLATFORM}_\${TARBALL_VERSION}"
 TARBALL_NAME="\${TARBALL_BASE_NAME}-jdk_\${PLATFORM_VERSION}"
@@ -205,7 +228,7 @@ build() {
         mv \$TEST_IMAGE_NAME "test"
         # Static libraries (release-only: needed for building graal vm with native image)
         # Tar as overlay
-        tar --transform "s|^static-libs/*|\${NAME}/|" -c -f \${TARBALL_NAME_STATIC_LIBS}.tar "static-libs"
+        tar --transform "s|^static-libs/lib/*|\${NAME}/lib/static/linux-\${STATICLIBS_ARCH}/glibc/|" -c -f \${TARBALL_NAME_STATIC_LIBS}.tar "static-libs"
         gzip \${TARBALL_NAME_STATIC_LIBS}.tar
       fi
     popd

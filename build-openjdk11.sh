@@ -22,6 +22,28 @@ platform_name() {
   esac
 }
 
+#
+# Mapping for static-libs packaging
+#
+# x86_64 => amd64
+# aarch64 => aach64
+#
+staticlibs_arch() {
+  arch=$(uname -m)
+  case $arch in
+  x86_64)
+    echo "amd64"
+    ;;
+  aarch64)
+    echo "aarch64"
+    ;;
+  *)
+    echo "Unsupported platform '$arch'" 1>&2
+    exit 1
+    ;;
+  esac
+}
+
 UPDATE="11.0.9"
 BUILD=6
 NAME="openjdk-${UPDATE}_${BUILD}"
@@ -36,6 +58,7 @@ TARBALL_NAME="${TARBALL_BASE_NAME}-jdk_${PLATFORM_VERSION}"
 TARBALL_NAME_JRE="${TARBALL_BASE_NAME}-jre_${PLATFORM_VERSION}"
 TARBALL_NAME_TEST_IMAGE="${TARBALL_BASE_NAME}-testimage_${PLATFORM_VERSION}"
 TARBALL_NAME_STATIC_LIBS="${TARBALL_BASE_NAME}-static-libs_${PLATFORM_VERSION}"
+STATICLIBS_ARCH="$(staticlibs_arch)"
 SOURCE_NAME="${TARBALL_BASE_NAME}-sources_${TARBALL_VERSION}"
 # Release string for the vendor. Use the GA date.
 VENDOR="18.9"
@@ -125,7 +148,7 @@ build() {
         mv $TEST_IMAGE_NAME "test"
         # Static libraries (release-only: needed for building graal vm with native image)
         # Tar as overlay
-        tar --transform "s|^static-libs/*|${NAME}/|" -c -f ${TARBALL_NAME_STATIC_LIBS}.tar "static-libs"
+        tar --transform "s|^static-libs/lib/*|${NAME}/lib/static/linux-${STATICLIBS_ARCH}/glibc/|" -c -f ${TARBALL_NAME_STATIC_LIBS}.tar "static-libs"
         gzip ${TARBALL_NAME_STATIC_LIBS}.tar
       fi
     popd
