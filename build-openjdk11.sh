@@ -56,10 +56,7 @@ TARBALL_VERSION="${UPDATE}_${BUILD}${EA_SUFFIX}"
 PLATFORM_VERSION="${PLATFORM}_${TARBALL_VERSION}"
 TARBALL_NAME="${TARBALL_BASE_NAME}-jdk_${PLATFORM_VERSION}"
 TARBALL_NAME_JRE="${TARBALL_BASE_NAME}-jre_${PLATFORM_VERSION}"
-TARBALL_NAME_SHENANDOAH="${TARBALL_BASE_NAME}-jdk-shenandoah_${PLATFORM_VERSION}"
-TARBALL_NAME_SHENANDOAH_JRE="${TARBALL_BASE_NAME}-jre-shenandoah_${PLATFORM_VERSION}"
 TARBALL_NAME_TEST_IMAGE="${TARBALL_BASE_NAME}-testimage_${PLATFORM_VERSION}"
-TARBALL_NAME_SHENANDOAH_TEST_IMAGE="${TARBALL_BASE_NAME}-testimage-shenandoah_\${PLATFORM_VERSION}"
 TARBALL_NAME_STATIC_LIBS="${TARBALL_BASE_NAME}-static-libs_${PLATFORM_VERSION}"
 STATICLIBS_ARCH="$(staticlibs_arch)"
 SOURCE_NAME="${TARBALL_BASE_NAME}-sources_${TARBALL_VERSION}"
@@ -106,18 +103,10 @@ build() {
 
   # NOTE: Boot JDK downloaded from AdoptOpenJDK. Originally
   # bootstrapped with relevant build-openjdkXX.sh scripts.
-  for debug in release shenandoah slowdebug; do
-    if [ "$debug" == "shenandoah" ]; then
-       flag="--with-jvm-features=shenandoahgc"
-       dbg_level="release"
-    else
-       flag=""
-       dbg_level="$debug"
-    fi
+  for debug in release slowdebug; do
     bash configure \
        --with-boot-jdk="/opt/openjdk-11.0.4+11/" \
-       "\$flag" \
-       --with-debug-level="$dbg_level" \
+       --with-debug-level="$debug" \
        --with-conf-name="$debug" \
        --enable-unlimited-crypto \
        --with-version-build=$BUILD \
@@ -131,14 +120,6 @@ build() {
       targets="images"
     fi
     make LOG=debug CONF=$debug $targets
-    archive_name="$TARBALL_NAME"
-    jre_archive_name="$TARBALL_NAME_JRE"
-    testimage_archive_name="$TARBALL_NAME_TEST_IMAGE"
-    if [ "${debug}_" == "shenandoah_" ]; then
-      archive_name="$TARBALL_NAME_SHENANDOAH"
-      jre_archive_name="$TARBALL_NAME_SHENANDOAH_JRE"
-      testimage_archive_name="$TARBALL_NAME_SHENANDOAH_TEST_IMAGE"
-    fi
     # Package it up
     pushd build/$debug/images
       if [ "${debug}_" == "slowdebug_" ]; then
@@ -147,23 +128,23 @@ build() {
       fi
       # JDK package
       mv jdk $NAME
-      tar -c -f ${archive_name}.tar --exclude='**.debuginfo' $NAME
-      gzip ${archive_name}.tar
-      tar -c -f ${archive_name}-debuginfo.tar $(find ${NAME}/ -name \*.debuginfo)
-      gzip ${archive_name}-debuginfo.tar
+      tar -c -f ${TARBALL_NAME}.tar --exclude='**.debuginfo' $NAME
+      gzip ${TARBALL_NAME}.tar
+      tar -c -f ${TARBALL_NAME}-debuginfo.tar $(find ${NAME}/ -name \*.debuginfo)
+      gzip ${TARBALL_NAME}-debuginfo.tar
       mv $NAME jdk
       # JRE package produced via legacy-images (release only)
-      if [ "${debug}_" == "release_" || "${debug}_" == "shenandoah_"]; then
+      if [ "${debug}_" == "release_" ]; then
         mv jre $JRE_NAME
-        tar -c -f ${jre_archive_name}.tar --exclude='**.debuginfo' $JRE_NAME
-        gzip ${jre_archive_name}.tar
-        tar -c -f ${jre_archive_name}-debuginfo.tar $(find ${JRE_NAME}/ -name \*.debuginfo)
-        gzip ${jre_archive_name}-debuginfo.tar
+        tar -c -f ${TARBALL_NAME_JRE}.tar --exclude='**.debuginfo' $JRE_NAME
+        gzip ${TARBALL_NAME_JRE}.tar
+        tar -c -f ${TARBALL_NAME_JRE}-debuginfo.tar $(find ${JRE_NAME}/ -name \*.debuginfo)
+        gzip ${TARBALL_NAME_JRE}-debuginfo.tar
         mv $JRE_NAME jre
         # Test image (release-only: needed for after-the-fact testing with native libs)
         mv "test" $TEST_IMAGE_NAME
-        tar -c -f ${testimage_archive_name}.tar $TEST_IMAGE_NAME
-        gzip ${testimage_archive_name}.tar
+        tar -c -f ${TARBALL_NAME_TEST_IMAGE}.tar $TEST_IMAGE_NAME
+        gzip ${TARBALL_NAME_TEST_IMAGE}.tar
         mv $TEST_IMAGE_NAME "test"
         # Static libraries (release-only: needed for building graal vm with native image)
         # Tar as overlay
