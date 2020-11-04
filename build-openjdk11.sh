@@ -44,8 +44,8 @@ staticlibs_arch() {
   esac
 }
 
-UPDATE="11.0.9"
-BUILD=11
+UPDATE="11.0.9.1"
+BUILD=1
 NAME="openjdk-${UPDATE}_${BUILD}"
 JRE_NAME="${NAME}-jre"
 TEST_IMAGE_NAME="${NAME}-test-image"
