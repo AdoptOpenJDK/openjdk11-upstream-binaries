@@ -247,7 +247,7 @@ build() {
         mv \$TEST_IMAGE_NAME "test"
         # Static libraries (release-only: needed for building graal vm with native image)
         # Tar as overlay
-        tar --transform "s|^static-libs/lib/*|\${NAME}/lib/static/linux-\${STATICLIBS_ARCH}/glibc/|" -c -f \${TARBALL_NAME_STATIC_LIBS}.tar "static-libs"
+        tar --transform "s|^static-libs/*|\${NAME}/lib/static/linux-\${STATICLIBS_ARCH}/glibc/|" -c -f \${TARBALL_NAME_STATIC_LIBS}.tar "static-libs"
         gzip \${TARBALL_NAME_STATIC_LIBS}.tar
       fi
     popd
