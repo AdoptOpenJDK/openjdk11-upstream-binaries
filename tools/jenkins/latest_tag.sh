@@ -7,7 +7,7 @@
 #set -xv
 
 # 11u update cycle release version number
-UPDATE="11.0.10"
+UPDATE="11.0.11"
 JDK_URL=https://hg.openjdk.java.net/jdk-updates/jdk11u
 JDK_REPO=jdk11u
 BASE_PATH="$1"
