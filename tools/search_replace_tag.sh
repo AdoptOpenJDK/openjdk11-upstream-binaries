@@ -53,8 +53,18 @@ parseTag
 
 debugPrint
 
+# Linux files
 for f in build-openjdk11.sh install-rhel-deps-build-openjdk11.sh; do
   sed -i "s|EA_SUFFIX=.*|EA_SUFFIX=\"${EA_SUFFIX}\"|g" $f
   sed -i "s|BUILD=.*|BUILD=${BUILD}|g" $f
   sed -i "s|UPDATE=.*|UPDATE=\"${UPDATE}\"|g" $f
 done
+
+# Windows files
+for f in build11.cmd; do
+  sed -i "s|set EARLY_ACCESS=.*|set EARLY_ACCESS=${EA_SUFFIX}|g" $f
+  sed -i "s|set BUILD=.*|set BUILD=${BUILD}|g" $f
+  sed -i "s|set UPDATE=.*|set UPDATE=${UPDATE}|g" $f
+done
+
+
