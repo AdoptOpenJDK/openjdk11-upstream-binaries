@@ -36,7 +36,7 @@
 	rem if x%EARLY_ACCESS% == x set OJDK_TAG=jdk-%OJDK_UPDATE%-ga
 
 	rem uncomment to retrieve from jdk11u-dev repository
-	set DEV_REPO=-dev
+	rem DEV_REPO=-dev
 
 	rem uncomment and define to fetch OpenJDK source from GIT repo
 	rem set JDK_GIT_REPO=https://github.com/openjdk/jdk11u%DEV_REPO%.git
