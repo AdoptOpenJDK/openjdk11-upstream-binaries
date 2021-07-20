@@ -22,7 +22,7 @@
 	
 	rem define source version
 	set UPDATE=11.0.12
-	set BUILD=6
+	set BUILD=7
 	set MILESTONE=openjdk
 	set RELEASE_DATE=
 	set OJDK_MILESTONE=11u
@@ -32,7 +32,7 @@
 	set OJDK_TAG=jdk-%OJDK_UPDATE%+%OJDK_BUILD%
 
 	rem comment out for GA builds
-	set EARLY_ACCESS=_ea
+	rem set EARLY_ACCESS=_ea
 	rem if x%EARLY_ACCESS% == x set OJDK_TAG=jdk-%OJDK_UPDATE%-ga
 
 	rem uncomment to retrieve from jdk11u-dev repository
