@@ -7,9 +7,9 @@
 #set -xv
 
 # 11u update cycle release version number
-UPDATE="11.0.12"
-JDK_URL=https://hg.openjdk.java.net/jdk-updates/jdk11u
-JDK_REPO=jdk11u
+UPDATE="11.0.13"
+JDK_URL=https://github.com/openjdk/jdk11u
+JDK_REPO=jdk11u-git
 BASE_PATH="$1"
 
 if [ -z "${WORKSPACE}" ]; then
@@ -20,7 +20,7 @@ if [ -z "${BASE_PATH}" ]; then
 fi
 
 check_clone() {
-  echo "Checking top HG repo exists..."
+  echo "Checking top Git repo exists..."
   # Ensure parent folder exists
   if [ ! -e "$BASE_PATH" ]; then
     mkdir -p "$BASE_PATH"
@@ -29,7 +29,7 @@ check_clone() {
     echo "$JDK_REPO exists, skipping clone."
   else
     pushd $BASE_PATH
-      hg clone $JDK_URL $JDK_REPO
+      git clone $JDK_URL $JDK_REPO
     popd
   fi
 }
@@ -45,14 +45,18 @@ check_clone
 
 pushd "$BASE_PATH/$JDK_REPO"
 
-hg pull -u
+git pull --tags origin
 
 LAST_TAG="$(cat ${WORKSPACE}/latest_tag.txt 2> /dev/null || true)"
 
-for i in $(hg log --rev "max(tag('re:jdk-${UPDATE}\+[0-9]+'))" --template "{tags}\n"); do
+# We restrict the tag listing for the current update cycle. Hence the pattern to -l
+#
+# refname:lstrip=2   transforms refs/tags/<tag> => <tag>
+# -taggerdate        sorts descending by the date a tag got created (newest first)
+for i in $(git tag -l "jdk-$UPDATE*" --format='%(refname:lstrip=2)' --sort=-taggerdate); do
   echo $i
 done | tee revs.txt
-num_tags=$(wc -l revs.txt | cut -d' ' -f1)
+num_tags=$(cat revs.txt | wc -l)
 
 # One revision might have been tagged multiple times, or we
 # might have a swtich from one GA release to the beginning of a
@@ -77,7 +81,7 @@ if [ -z "$TAG" ]; then
 fi
 if ! echo $TAG | grep -q $UPDATE; then
   echo "Latest tag ($TAG) does not match configured update ($UPDATE). This is an error." 1>&2
-  echo "It appears a new update cycle has started. Please update te job config" 1>&2
+  echo "It appears a new update cycle has started. Please update the job config" 1>&2
   echo "to the latest update." 1>&2
   exit 1
 fi

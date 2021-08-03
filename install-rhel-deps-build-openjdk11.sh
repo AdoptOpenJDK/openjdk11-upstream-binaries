@@ -72,7 +72,7 @@ zip
 unzip
 java-1.8.0-openjdk-devel
 openssl
-mercurial
+git
 wget
 patch
 gzip
@@ -84,11 +84,11 @@ EOF
 # Originally boot-strapped with build-openjdk9.sh and build-openjdk10.sh
 # For simplicity download a suitable boot JDK from AdoptOpenJDK.
 pushd /opt
-wget -O jdk-11.0.10_9.tar.gz "https://github.com/AdoptOpenJDK/openjdk11-upstream-binaries/releases/download/jdk-11.0.10%2B9/OpenJDK11U-jdk_$(platform_name)_11.0.10_9.tar.gz"
-tar -xf jdk-11.0.10_9.tar.gz
-/opt/openjdk-11.0.10_9/bin/java -version
+wget -O jdk-11.0.12_7.tar.gz "https://github.com/AdoptOpenJDK/openjdk11-upstream-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_$(platform_name)_11.0.12_7.tar.gz"
+tar -xf jdk-11.0.12_7.tar.gz
+/opt/openjdk-11.0.12_7/bin/java -version
 popd
-BOOT_JDK="/opt/openjdk-11.0.10_9/"
+BOOT_JDK="/opt/openjdk-11.0.12_7/"
 
 yum -y install $(echo $(cat $BRS_FILE))
 
@@ -127,13 +127,13 @@ cat > $BUILD_SCRIPT <<EOF
 #!/bin/bash
 set -e
 
-UPDATE="11.0.12"
-BUILD=7
+UPDATE="11.0.13"
+BUILD=1
 NAME="openjdk-\${UPDATE}_\${BUILD}"
 JRE_NAME="\${NAME}-jre"
 TEST_IMAGE_NAME="\${NAME}-test-image"
 TARBALL_BASE_NAME="OpenJDK11U"
-EA_SUFFIX=""
+EA_SUFFIX="_ea"
 PLATFORM="$(platform_name)"
 STATICLIBS_ARCH="$(staticlibs_arch)"
 TARBALL_VERSION="\${UPDATE}_\${BUILD}\${EA_SUFFIX}"
@@ -149,7 +149,7 @@ SOURCE_NAME="\${TARBALL_BASE_NAME}-sources_\${TARBALL_VERSION}"
 # Release string for the vendor. Use the GA date.
 VENDOR="18.9"
 
-CLONE_URL=https://hg.openjdk.java.net/jdk-updates/jdk11u
+CLONE_URL=https://github.com/openjdk/jdk11u
 TAG="jdk-\${UPDATE}+\${BUILD}"
 
 clone() {
@@ -160,7 +160,10 @@ clone() {
     echo "Target directory \$targetdir already exists. Skipping clone"
     return
   fi
-  hg clone -u \$tag \$url \$targetdir
+  git clone \$url \$targetdir
+  pushd \$targetdir
+  git checkout -b \$tag \$tag
+  popd
 }
 
 build() {
