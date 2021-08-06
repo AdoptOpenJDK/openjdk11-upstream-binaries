@@ -45,7 +45,7 @@ check_clone
 
 pushd "$BASE_PATH/$JDK_REPO"
 
-git pull --tags origin
+git pull --tags origin master
 
 LAST_TAG="$(cat ${WORKSPACE}/latest_tag.txt 2> /dev/null || true)"
 
