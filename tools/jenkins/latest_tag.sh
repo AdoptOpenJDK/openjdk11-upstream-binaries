@@ -50,30 +50,7 @@ git pull --tags origin master
 LAST_TAG="$(cat ${WORKSPACE}/latest_tag.txt 2> /dev/null || true)"
 
 # We restrict the tag listing for the current update cycle. Hence the pattern to -l
-#
-# refname:lstrip=2   transforms refs/tags/<tag> => <tag>
-# -taggerdate        sorts descending by the date a tag got created (newest first)
-for i in $(git tag -l "jdk-$UPDATE*" --format='%(refname:lstrip=2)' --sort=-taggerdate); do
-  echo $i
-done | tee revs.txt
-num_tags=$(cat revs.txt | wc -l)
-
-# One revision might have been tagged multiple times, or we
-# might have a swtich from one GA release to the beginning of a
-# new update (build 0).
-if [ $num_tags -gt 1 ]; then
-   candidate=$(sed 's/jdk-\([0-9]\{2\}\.[0-9]\+\.[0-9]\+\)+.*/\1/g' revs.txt | sort -n | tail -n1)
-   candidates=$(grep $candidate revs.txt | wc -l)
-   if [ $candidates -gt 1 ]; then
-     # same revision tagged twice (no changes) case
-     TAG=$(sort revs.txt | tail -n1)
-   else
-     # GA => new update case
-     TAG=$(grep $candidate revs.txt)
-   fi
-else
-   TAG="$(cat revs.txt)"
-fi
+TAG=$(git tag -l "jdk-$UPDATE*" | sort | tail -n1)
 
 if [ -z "$TAG" ]; then
   echo "No tags for update $UPDATE found. This is an error." 1>&2
