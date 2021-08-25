@@ -128,7 +128,7 @@ cat > $BUILD_SCRIPT <<EOF
 set -e
 
 UPDATE="11.0.13"
-BUILD=3
+BUILD=4
 NAME="openjdk-\${UPDATE}_\${BUILD}"
 JRE_NAME="\${NAME}-jre"
 TEST_IMAGE_NAME="\${NAME}-test-image"
