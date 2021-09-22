@@ -45,7 +45,7 @@ staticlibs_arch() {
 }
 
 UPDATE="11.0.13"
-BUILD=5
+BUILD=6
 NAME="openjdk-${UPDATE}_${BUILD}"
 JRE_NAME="${NAME}-jre"
 TEST_IMAGE_NAME="${NAME}-test-image"
