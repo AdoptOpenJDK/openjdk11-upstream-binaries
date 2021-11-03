@@ -127,13 +127,13 @@ cat > $BUILD_SCRIPT <<EOF
 #!/bin/bash
 set -e
 
-UPDATE="11.0.13"
-BUILD=8
+UPDATE="11.0.14"
+BUILD=1
 NAME="openjdk-\${UPDATE}_\${BUILD}"
 JRE_NAME="\${NAME}-jre"
 TEST_IMAGE_NAME="\${NAME}-test-image"
 TARBALL_BASE_NAME="OpenJDK11U"
-EA_SUFFIX=""
+EA_SUFFIX="_ea"
 PLATFORM="$(platform_name)"
 STATICLIBS_ARCH="$(staticlibs_arch)"
 TARBALL_VERSION="\${UPDATE}_\${BUILD}\${EA_SUFFIX}"
