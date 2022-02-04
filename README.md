@@ -10,6 +10,9 @@ This repository also contains [build scripts](install-rhel6-deps-build-openjdk11
 
 ### Usage
 
+These build scripts require a compiler which supports the C++11 standard for the in-tree harfbuzz library. In order to get access to such a compiler on older systems it is recommended to subscribe the build host to the Red Hat Software Collections channel using subscription-manager. More details on how to do that here:
+https://access.redhat.com/documentation/en-us/red_hat_software_collections/1/html/1.2_release_notes/chap-installation
+
 On your newly commissioned RHEL machine, you can run these steps to produce a build:
 
     $ wget -O openjdk11-upstream-binaries-master.tar.gz "https://github.com/AdoptOpenJDK/openjdk11-upstream-binaries/archive/master.tar.gz"
