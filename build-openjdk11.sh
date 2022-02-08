@@ -114,7 +114,7 @@ build() {
        flag=""
        dbg_level="$debug"
     fi
-    scl enable devtoolset-8 -- bash configure \
+    bash configure \
        --with-boot-jdk="/opt/openjdk-11.0.4+11/" \
        "\$flag" \
        --with-debug-level="$dbg_level" \
@@ -125,12 +125,12 @@ build() {
        --with-version-opt="" \
        --with-vendor-version-string="$VENDOR" \
        --with-native-debug-symbols=external \
-       --disable-warnings-as-errors"
+       --disable-warnings-as-errors
     targets="bootcycle-images legacy-images test-image static-libs-image"
     if [ "${debug}_" == "slowdebug_" ]; then
       targets="images"
     fi
-    scl enable devtoolset-8 -- make LOG=debug CONF=$debug $targets
+    make LOG=debug CONF=$debug $targets
     archive_name="$TARBALL_NAME"
     jre_archive_name="$TARBALL_NAME_JRE"
     testimage_archive_name="$TARBALL_NAME_TEST_IMAGE"
