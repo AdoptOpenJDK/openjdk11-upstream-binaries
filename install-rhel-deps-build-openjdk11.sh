@@ -85,11 +85,11 @@ EOF
 # Originally boot-strapped with build-openjdk9.sh and build-openjdk10.sh
 # For simplicity download a suitable boot JDK from AdoptOpenJDK.
 pushd /opt
-wget -O jdk-11.0.14_9.tar.gz "https://github.com/AdoptOpenJDK/openjdk11-upstream-binaries/releases/download/jdk-11.0.14%2B9/OpenJDK11U-jdk_$(platform_name)_11.0.14_9.tar.gz"
-tar -xf jdk-11.0.14_9.tar.gz
-/opt/openjdk-11.0.14_9/bin/java -version
+wget -O jdk-11.0.12_7.tar.gz "https://github.com/AdoptOpenJDK/openjdk11-upstream-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_$(platform_name)_11.0.12_7.tar.gz"
+tar -xf jdk-11.0.12_7.tar.gz
+/opt/openjdk-11.0.12_7/bin/java -version
 popd
-BOOT_JDK="/opt/openjdk-11.0.14_9/"
+BOOT_JDK="/opt/openjdk-11.0.12_7/"
 
 yum -y install $(echo $(cat $BRS_FILE))
 
@@ -128,13 +128,13 @@ cat > $BUILD_SCRIPT <<EOF
 #!/bin/bash
 set -e
 
-UPDATE="11.0.15"
-BUILD=1
+UPDATE="11.0.14"
+BUILD=9
 NAME="openjdk-\${UPDATE}_\${BUILD}"
 JRE_NAME="\${NAME}-jre"
 TEST_IMAGE_NAME="\${NAME}-test-image"
 TARBALL_BASE_NAME="OpenJDK11U"
-EA_SUFFIX="_ea"
+EA_SUFFIX=""
 PLATFORM="$(platform_name)"
 STATICLIBS_ARCH="$(staticlibs_arch)"
 TARBALL_VERSION="\${UPDATE}_\${BUILD}\${EA_SUFFIX}"
