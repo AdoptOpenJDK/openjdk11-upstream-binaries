@@ -55,8 +55,9 @@ binutils
 cups-devel
 fontconfig
 freetype-devel
+devtoolset-8
 giflib-devel
-gcc-c++
+devtoolset-8-gcc-c++
 gtk2-devel
 libjpeg-devel
 libpng-devel
@@ -198,7 +199,7 @@ build() {
        flag=""
        dbg_level="\$debug"
     fi
-    bash configure \
+    scl enable devtoolset-8 -- bash configure \
        --with-boot-jdk="$BOOT_JDK" \
        "\$flag" \
        --with-debug-level="\$dbg_level" \
@@ -214,7 +215,7 @@ build() {
     if [ "\${debug}_" == "slowdebug_" ]; then
       targets="images"
     fi
-    make LOG=debug CONF=\$debug \$targets
+    scl enable devtoolset-8 -- make LOG=debug CONF=\$debug \$targets
     archive_name="\$TARBALL_NAME"
     jre_archive_name="\$TARBALL_NAME_JRE"
     testimage_archive_name="\$TARBALL_NAME_TEST_IMAGE"
