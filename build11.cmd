@@ -26,6 +26,7 @@
 	set MILESTONE=openjdk
 	set RELEASE_DATE=
 	set OJDK_MILESTONE=11u
+	set OJDK_MILESTONEUC=%OJDK_MILESTONE:u=U%
 	set VENDOR_VERSION_STRING=18.9
 	set OJDK_UPDATE=%UPDATE%
 	set OJDK_BUILD=%BUILD%
@@ -142,24 +143,24 @@
 	rem ZIP_DIR_NAME is the directory the zipfile (RELEASE_ZIPFILE) will unpack into
 	if defined BUILD_JDK (
 		set ZIP_DIR_NAME=openjdk-%OJDK_UPDATE%_%OJDK_BUILD%
-		set RELEASE_ZIPFILE=OpenJDK%OJDK_MILESTONE%-jdk_x64_windows_%OJDK_UPDATE%_%OJDK_BUILD%%EARLY_ACCESS%.zip
+		set RELEASE_ZIPFILE=OpenJDK%OJDK_MILESTONEUC%-jdk_x64_windows_%OJDK_UPDATE%_%OJDK_BUILD%%EARLY_ACCESS%.zip
 		@echo final JDK product will be !RELEASE_ZIPFILE! directory !ZIP_DIR_NAME!
 	)
 
 	if defined BUILD_STATIC_LIBS (
-		set RELEASE_STATIC_LIB_ZIPFILE=OpenJDK%OJDK_MILESTONE%-static-libs_x64_windows_%OJDK_UPDATE%_%OJDK_BUILD%%EARLY_ACCESS%.zip
+		set RELEASE_STATIC_LIB_ZIPFILE=OpenJDK%OJDK_MILESTONEUC%-static-libs_x64_windows_%OJDK_UPDATE%_%OJDK_BUILD%%EARLY_ACCESS%.zip
 		set STATIC_LIB_DIR=lib/static/windows-amd64
 	)
 
 	if defined BUILD_JRE (
 		set ZIP_JRE_DIR_NAME=openjdk-%OJDK_UPDATE%_%OJDK_BUILD%-jre
-		set RELEASE_JRE_ZIPFILE=OpenJDK%OJDK_MILESTONE%-jre_x64_windows_%OJDK_UPDATE%_%OJDK_BUILD%%EARLY_ACCESS%.zip
+		set RELEASE_JRE_ZIPFILE=OpenJDK%OJDK_MILESTONEUC%-jre_x64_windows_%OJDK_UPDATE%_%OJDK_BUILD%%EARLY_ACCESS%.zip
 		@echo final JRE product will be !RELEASE_JRE_ZIPFILE! directory !ZIP_JRE_DIR_NAME!
 	)
 
 	if defined BUILD_JDK_TESTIMAGE (
 		set ZIP_TESTIMAGE_DIR_NAME=openjdk-%OJDK_UPDATE%_%OJDK_BUILD%-test-image
-		set RELEASE_TESTIMAGE_ZIPFILE=OpenJDK%OJDK_MILESTONE%-testimage_x64_windows_%OJDK_UPDATE%_%OJDK_BUILD%%EARLY_ACCESS%.zip
+		set RELEASE_TESTIMAGE_ZIPFILE=OpenJDK%OJDK_MILESTONEUC%-testimage_x64_windows_%OJDK_UPDATE%_%OJDK_BUILD%%EARLY_ACCESS%.zip
 		@echo final TESTIMAGE product will be !RELEASE_TESTIMAGE_ZIPFILE! directory !ZIP_TESTIMAGE_DIR_NAME!
 	)
 	
@@ -238,13 +239,13 @@
 	if defined BUILD_JDK_SHENANDOAH (
 		set OJDK_CONF=ojdk-shenandoah
 		set ZIP_DIR_NAME=openjdk-%OJDK_UPDATE%_%OJDK_BUILD%
-		set RELEASE_ZIPFILE=OpenJDK%OJDK_MILESTONE%-jdk-shenandoah_x64_windows_%OJDK_UPDATE%_%OJDK_BUILD%%EARLY_ACCESS%.zip
+		set RELEASE_ZIPFILE=OpenJDK%OJDK_MILESTONEUC%-jdk-shenandoah_x64_windows_%OJDK_UPDATE%_%OJDK_BUILD%%EARLY_ACCESS%.zip
 		@echo final shenandoah JDK product will be !RELEASE_ZIPFILE! directory !ZIP_DIR_NAME!
 		set ZIP_JRE_DIR_NAME=openjdk-%OJDK_UPDATE%_%OJDK_BUILD%-jre
-		set RELEASE_JRE_ZIPFILE=OpenJDK%OJDK_MILESTONE%-jre-shenandoah_x64_windows_%OJDK_UPDATE%_%OJDK_BUILD%%EARLY_ACCESS%.zip
+		set RELEASE_JRE_ZIPFILE=OpenJDK%OJDK_MILESTONEUC%-jre-shenandoah_x64_windows_%OJDK_UPDATE%_%OJDK_BUILD%%EARLY_ACCESS%.zip
 		@echo final shenandoah JRE product will be !RELEASE_JRE_ZIPFILE! directory !ZIP_JRE_DIR_NAME!
 		set ZIP_TESTIMAGE_DIR_NAME=openjdk-%OJDK_UPDATE%_%OJDK_BUILD%-test-image
-		set RELEASE_TESTIMAGE_ZIPFILE=OpenJDK%OJDK_MILESTONE%-testimage-shenandoah_x64_windows_%OJDK_UPDATE%_%OJDK_BUILD%%EARLY_ACCESS%.zip
+		set RELEASE_TESTIMAGE_ZIPFILE=OpenJDK%OJDK_MILESTONEUC%-testimage-shenandoah_x64_windows_%OJDK_UPDATE%_%OJDK_BUILD%%EARLY_ACCESS%.zip
 		@echo final shenandoah TESTIMAGE product will be !RELEASE_TESTIMAGE_ZIPFILE! directory !ZIP_TESTIMAGE_DIR_NAME!
 		set CONFIG_PASS_FLAGS=--with-jvm-features=shenandoahgc
 		call :configure_jdk_build || exit /b 1
