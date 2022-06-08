@@ -22,7 +22,7 @@
 	
 	rem define source version
 	set UPDATE=11.0.16
-	set BUILD=5
+	set BUILD=6
 	set MILESTONE=openjdk
 	set RELEASE_DATE=
 	set OJDK_MILESTONE=11u
